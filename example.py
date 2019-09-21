@@ -17,7 +17,7 @@ def get_data():
 
 if __name__ == "__main__":
     x = get_data()
-    # x = x[0:10, :, :]
+    # x = x[0:10, :, 8:10]
     input_dim = x.shape[-1] # 13
     timesteps = x.shape[1] # 3
     batch_size = 1
@@ -38,8 +38,10 @@ if __name__ == "__main__":
     # pick a column to plot.
     print("plotting...")
     print("x: %s, preds: %s" % (x.shape, preds.shape))
-    plt.plot(x[:,0,2], label='data')
-    plt.plot(preds[:,0,2], label='predict')
+    # plt.plot(x[3,2,:], label='data')
+    # plt.plot(preds[3,2,:], label='predict')
+    plt.plot(x[:,2,3], label='data')
+    plt.plot(preds[:,2,3], label='predict')
     plt.legend()
     plt.show()
 

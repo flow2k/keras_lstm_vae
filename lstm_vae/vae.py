@@ -31,10 +31,10 @@ def create_lstm_vae(input_dim,
         - [Generating sentences from a continuous space](https://arxiv.org/abs/1511.06349)
     """
     x = Input(shape=(timesteps, input_dim,))
-    # x2 = tf.Print(x, [x], message="EncInput", summarize=1024)
+    x2 = tf.Print(x, [x], message="EncInput", summarize=1024)
 
     # LSTM encoding
-    h = LSTM(intermediate_dim)(x)
+    h = LSTM(intermediate_dim)(x2)
 
     # VAE Z layer
     z_mean = Dense(latent_dim)(h)
@@ -75,23 +75,29 @@ def create_lstm_vae(input_dim,
     _x_decoded_mean = decoder_mean(_h_decoded)
     generator = Model(decoder_input, _x_decoded_mean)
     
-    def vae_loss(x, x_decoded_mean):
-        xent_loss = mse(x, x_decoded_mean)
-        # xent_loss = K.print_tensor(xent_loss, message="Losss")
-        # xent_loss = tf.Print(xent_loss, [xent_loss], message = "TF Losss", summarize = 1024)
-        kl_loss = - 0.5 * K.mean(1 + z_log_sigma - K.square(z_mean) - K.exp(z_log_sigma))
-        loss = xent_loss + kl_loss
-        return loss
+    # def vae_loss(x, x_decoded_mean):
+    #     xent_loss = mse(x, x_decoded_mean)
+    #     # xent_loss = K.print_tensor(xent_loss, message="Losss")
+    #     # xent_loss = tf.Print(xent_loss, [xent_loss], message = "TF Losss", summarize = 1024)
+    #     kl_loss = - 0.5 * K.mean(1 + z_log_sigma - K.square(z_mean) - K.exp(z_log_sigma))
+    #     loss = xent_loss + kl_loss
+    #     return loss
 
     xent_loss = mse(x, x_decoded_mean)
-    # xent_loss = K.print_tensor(xent_loss, message="Losss")
+    xent_loss = K.print_tensor(xent_loss, message="Losss")
     # xent_loss = tf.Print(xent_loss, [xent_loss], message = "TF Losss", summarize = 1024)
     kl_loss = - 0.5 * K.mean(1 + z_log_sigma - K.square(z_mean) - K.exp(z_log_sigma))
     vae_loss2 = xent_loss + kl_loss
+    vae_loss2 = K.mean(vae_loss2)
+    vae_loss2 = K.print_tensor(vae_loss2, message="Losss")
 
-    # vae.compile(optimizer='rmsprop', loss=vae_loss)
+    # # vae.compile(optimizer='rmsprop', loss=vae_loss)
+    # vae.add_loss(vae_loss2)
+    # vae.compile(optimizer='rmsprop')
+
+    # vae.compile(optimizer='adam', loss=vae_loss)
     vae.add_loss(vae_loss2)
-    vae.compile(optimizer='rmsprop')
+    vae.compile(optimizer='adam')
 
     print("generated model yay")
     return vae, encoder, generator
