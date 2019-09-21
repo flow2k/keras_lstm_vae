@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
-
+import sys
+np.set_printoptions(threshold=sys.maxsize)
 from lstm_vae import create_lstm_vae
 
 def get_data():
@@ -16,6 +17,7 @@ def get_data():
 
 if __name__ == "__main__":
     x = get_data()
+    # x = x[0:10, :, :]
     input_dim = x.shape[-1] # 13
     timesteps = x.shape[1] # 3
     batch_size = 1
@@ -27,15 +29,17 @@ if __name__ == "__main__":
         latent_dim=100,
         epsilon_std=1.)
 
-    vae.fit(x, x, epochs=20)
+    # vae.fit(x, x, batch_size=batch_size, epochs=6)
+    vae.fit(x, batch_size=batch_size, epochs=6)
 
+#%%
     preds = vae.predict(x, batch_size=batch_size)
 
     # pick a column to plot.
-    print("[plotting...]")
+    print("plotting...")
     print("x: %s, preds: %s" % (x.shape, preds.shape))
-    plt.plot(x[:,0,3], label='data')
-    plt.plot(preds[:,0,3], label='predict')
+    plt.plot(x[:,0,2], label='data')
+    plt.plot(preds[:,0,2], label='predict')
     plt.legend()
     plt.show()
 
