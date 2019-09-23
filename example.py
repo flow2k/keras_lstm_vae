@@ -25,12 +25,12 @@ if __name__ == "__main__":
     vae, enc, gen = create_lstm_vae(input_dim, 
         timesteps=timesteps, 
         batch_size=batch_size, 
-        intermediate_dim=32,
+        intermediate_dim=input_dim,
         latent_dim=100,
         epsilon_std=1.)
 
     # vae.fit(x, x, batch_size=batch_size, epochs=6)
-    vae.fit(x, batch_size=batch_size, epochs=6)
+    vae.fit(x, batch_size=batch_size, epochs=2) #at least 2 epochs needed to make 8th in [:,2,8] work
 
 #%%
     preds = vae.predict(x, batch_size=batch_size)
@@ -40,8 +40,8 @@ if __name__ == "__main__":
     print("x: %s, preds: %s" % (x.shape, preds.shape))
     # plt.plot(x[3,2,:], label='data')
     # plt.plot(preds[3,2,:], label='predict')
-    plt.plot(x[:,2,3], label='data')
-    plt.plot(preds[:,2,3], label='predict')
+    plt.plot(x[:,2,8], label='data')
+    plt.plot(preds[:,2,8], label='predict')
     plt.legend()
     plt.show()
 

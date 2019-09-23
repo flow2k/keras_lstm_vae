@@ -51,11 +51,13 @@ def create_lstm_vae(input_dim,
     z = Lambda(sampling, output_shape=(latent_dim,))([z_mean, z_log_sigma])
     
     # decoded LSTM layer
-    decoder_h = LSTM(intermediate_dim, return_sequences=True)
+    # decoder_h = LSTM(intermediate_dim, return_sequences=True)
+    # decoder_h = LSTM(intermediate_dim, return_sequences=True)
     decoder_mean = LSTM(input_dim, return_sequences=True)
 
     h_decoded = RepeatVector(timesteps)(z)
-    h_decoded = decoder_h(h_decoded)
+    # h_decoded = decoder_h(h_decoded)
+    # h_decoded = decoder_h(h_decoded)
 
     # decoded layer
     x_decoded_mean = decoder_mean(h_decoded)
@@ -70,7 +72,8 @@ def create_lstm_vae(input_dim,
     decoder_input = Input(shape=(latent_dim,))
 
     _h_decoded = RepeatVector(timesteps)(decoder_input)
-    _h_decoded = decoder_h(_h_decoded)
+    # _h_decoded = decoder_h(_h_decoded)
+    # _h_decoded = decoder_h(_h_decoded)
 
     _x_decoded_mean = decoder_mean(_h_decoded)
     generator = Model(decoder_input, _x_decoded_mean)
